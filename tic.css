@@ -1,102 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 body{
-    margin: 0;
-    padding: 0;
+    font-family: "Poppins",sans-serif;
+    background-color: #8c52ff;
 }
 
-.container{
-    margin: 5px;
-    padding: 5px;
+section{
+    text-align: center;
+    border-radius: 10px;
+    width: 400px;
+    margin: auto;
+    background-color: #ffff;
+    margin-top: 75px;
+    box-shadow: 0px 10px 36px 16px rgba(0,0,0,0.1);
 }
-.search-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-#search-input {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #3b3a3a;
-    border-radius: 5px;
-    margin-right: 10px;
+.gameTitle{
+    padding-top: 20px;
 }
 
-#search-button, #reset-button {
-    padding: 10px 15px;
-    background-color: #00d9ff;
-    color: #fff;
-    border: 1px solid #222121;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 10px;
-    
-}
-
-#search-button:hover, #reset-button:hover {
-    background-color: #0056b3;
-}
-
-/* Style for the product row */
-.product-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
-/* Style for the product card */
-.product-card {
-    width: 23%; /* 4 cards per row with some spacing */
-    padding: 10px;
-    border: 1px solid #ddd;
+.gameContainer{
+    display: grid;
+    grid-template-columns: repeat(3,auto);
+    width: 150px;
+    margin: 120px;
     margin-bottom: 10px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    margin-top: 10px;
 }
 
-/* Style for the product image */
-.product-card img {
-    max-width: 100%;
-    max-height: 150px; /* Set a maximum height for the images */
-    margin-bottom: 10px;
-}
-
-/* Style for the product name */
-.product-card p {
-    font-size: 14px;
-    margin: 0;
-}
-
-/* Style for pagination */
-.pagination {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.pagination li {
+.cell{
+    font-family: "Poppins",sans-serif;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 0 0 1px #333333;
+    border: 1px solid #333333;
     cursor: pointer;
-    padding: 5px 10px;
-    border: 1px solid #ddd;
+    line-height: 50px;
+    font-size: 20px;
+}
+
+button{
+    margin-bottom: 20px;
+    height: 30px;
+    border: none;
     border-radius: 5px;
+    color: #ffff;
+    background-color: #8c52ff;
+    cursor: pointer;
 }
 
-.pagination li:hover {
-    background-color: #f0f0f0;
+button:hover{
+    transition: 0.25s;
+    background-color: #c1a2f3;
 }
-
-footer {
-    text-align: center;
-    background-color: #1a1818;
-    padding: 10px;
-    color: #fff;
-  }
-
-  header {
-    text-align: center;
-    background-color: #0d0d0e;
-    color: #fff;
-    padding: 10px 0;
-  }
