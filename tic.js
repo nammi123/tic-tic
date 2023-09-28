@@ -1,92 +1,112 @@
+document.addEventListener("DOMContentLoaded", () => {
+    // API URL
+    const apiUrl = "https://api.punkapi.com/v2/beers?page=1&per_page=60";
 
-const statusDisplay = document.querySelector('.gameStatus');
+    // Variables to manage pagination
+    const minProductsPerPage = 10; // Minimum products per page
+    let currentPage = 1;
+    let filteredProducts = [];
 
-let gameActive = true;
+    // Get DOM elements
+    const searchInput = document.getElementById("search-input");
+    const searchButton = document.getElementById("search-button");
+    const resetButton = document.getElementById("reset-button");
+    const productContainer = document.getElementById("product-container");
+    const pagination = document.getElementById("pagination");
+    
+    // Function to fetch product data from the API
+    async function fetchProducts() {
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            filteredProducts = data;
+            currentPage = 1;
+            displayProducts(currentPage);
+            updatePaginationButtons();
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-let currentPlayer = "X";
+    // Function to display products on a specific page
+    function displayProducts(page) {
+        const startIndex = (page - 1) * minProductsPerPage;
+        const endIndex = startIndex + minProductsPerPage;
+        const productsToDisplay = filteredProducts.slice(startIndex, endIndex);
 
-let gameState = ["", "", "", "", "", "", "", "", ""];
+        // Clear previous products
+        productContainer.innerHTML =" ";
 
-const winningMessage = () => `Player ${currentPlayer} has won!`;
-const drawMessage = () => `Game ended in a draw!`;
-const currentPlayerTurn = () => `It's ${currentPlayer}'s turn`;
+        
 
-statusDisplay.innerHTML = currentPlayerTurn();
+        // Display products in rows of 4 each
+        for (let i = 0; i < productsToDisplay.length; i += 4) {
+            const row = document.createElement("div");
+            row.className = "product-row";
 
-document.querySelectorAll('.cell').forEach(cell => cell.addEventListener('click', handleCellClick));
-document.querySelector('.restartGame').addEventListener('click', handleRestartGame);
+            const rowProducts = productsToDisplay.slice(i, i + 4);
 
-function handleCellClick(clickedCellEvent) {   
-        const clickedCell = clickedCellEvent.target;
-        const clickedCellIndex = parseInt(
-          clickedCell.getAttribute('data-cell-index')
+            rowProducts.forEach(product => {
+                const productCard = document.createElement("div");
+                productCard.className = "product-card";
+
+                // Display product image
+                const productImage = document.createElement("img");
+                productImage.src = product.image_url;
+                productCard.appendChild(productImage);
+
+                // Display product name
+                const productName = document.createElement("p");
+                productName.textContent = product.name;
+                productCard.appendChild(productName);
+
+                row.appendChild(productCard);
+            });
+
+            productContainer.appendChild(row);
+        }
+
+        if(productsToDisplay.length==0)
+        {
+            productContainer.innerHTML="This product is not available please search another one 😊😊";  
+        }
+    }
+
+    
+
+    // Function to update pagination buttons
+    function updatePaginationButtons() {
+        const totalPages = Math.ceil(filteredProducts.length / minProductsPerPage);
+        pagination.innerHTML = "";
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageItem = document.createElement("li");
+            pageItem.textContent = i;
+            pageItem.addEventListener("click", () => {
+                currentPage = i;
+                displayProducts(currentPage);
+            });
+            pagination.appendChild(pageItem);
+        }
+    }
+
+    // Event listener for search button click
+    searchButton.addEventListener("click", () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        filteredProducts = filteredProducts.filter(product =>
+            product.name.toLowerCase().includes(searchTerm)
         );
-    
-        if (gameState[clickedCellIndex] !== "" || !gameActive) {
-            return;
-        }
-   
-        handleCellPlayed(clickedCell, clickedCellIndex);
-        handleResultValidation();
-}
+        currentPage = 1;
+        displayProducts(currentPage);
+        updatePaginationButtons();
+    });
 
-function handleCellPlayed(clickedCell, clickedCellIndex) {
-    
-        gameState[clickedCellIndex] = currentPlayer;
-        clickedCell.innerHTML = currentPlayer;
-    }
+    // Event listener for reset button click
+    resetButton.addEventListener("click", () => {
+        searchInput.value = "";
+        fetchProducts(); // Refetch the original data from the API
+    });
 
-    const winningConditions = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-    function handleResultValidation() {
-        let roundWon = false;
-        for (let i = 0; i <= 7; i++) {
-            const winCondition = winningConditions[i];
-            let a = gameState[winCondition[0]];
-            let b = gameState[winCondition[1]];
-            let c = gameState[winCondition[2]];
-            if (a === '' || b === '' || c === '') {
-                continue;
-            }
-            if (a === b && b === c) {
-                roundWon = true;
-                break
-            }
-        }
-    if (roundWon) {
-        statusDisplay.innerHTML = winningMessage();
-        gameActive = false;
-        return;
-    }
-
-    let roundDraw = !gameState.includes("");
-    if (roundDraw) {
-        statusDisplay.innerHTML = drawMessage();
-        gameActive = false;
-        return;
-    }
-
-    handlePlayerChange();
-}
-
-function handlePlayerChange() {
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
-    statusDisplay.innerHTML = currentPlayerTurn();
-}
-
-function handleRestartGame() {
-    gameActive = true;
-    currentPlayer = "X";
-    gameState = ["", "", "", "", "", "", "", "", ""];
-    statusDisplay.innerHTML = currentPlayerTurn();
-    document.querySelectorAll('.cell')
-               .forEach(cell => cell.innerHTML = "");
-}    
+    // Initial display
+    fetchProducts();
+});
